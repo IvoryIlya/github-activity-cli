@@ -45,12 +45,15 @@ def main():
         print(f"Recent activity for {username}:")
         for event in events:
             event_type = event.get('type', 'Unknown')
-            event_type = event_type.replace('Event', '')
             repo_name = event.get('repo', {}).get('name', 'Unknown repository')
-            created_at = event.get('created_at', 'Unknown time')
-            if event_type == 'Issues':
-                event_type = 'Issue'
-            print(f"- {event_type} {repo_name} at {created_at}")
+            if event_type[-1] != 'e': event_type = event_type.replace('Event', '')
+            else: event_type = event_type + 'd'
+            if event_type == 'Issues': event_type = 'Opened issue'
+            else:
+                if event_type == 'Created': event_type = 'Created repository:'
+                print(f"- {event_type} {repo_name}")
+                continue
+            print(f"- {event_type} in {repo_name}")
     except KeyboardInterrupt:
         exit(0)
     except urllib.error.HTTPError as e:
